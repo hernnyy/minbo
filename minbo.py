@@ -66,13 +66,13 @@ def on_user_joins(message):
 def on_info(message):
     chat_id = message.chat.id
     #bot.reply_to(message, texts.text_messages['info']) # respondemos con el mensaje correspondiente a info que está en el diccionario
-    bot.send_message(chat_id, texts.text_message['info']) # respondemos con el mensaje correspondiente a info que está en el diccionario
+    bot.send_message(chat_id, texts.text_messages['info']) # respondemos con el mensaje correspondiente a info que está en el diccionario
 
 @bot.message_handler(commands=['hola', 'help'])
 def on_hola(message):
     chat_id = message.chat.id
-    name += u" (@{})".format(message.username)
-    bot.send_message(chat_id, texts.text_message['hola'].format(name=name)) 
+    name = message.chat.username
+    bot.send_message(chat_id, texts.text_messages['hola'].format(name=name)) 
 
 @bot.message_handler(commands=["ping"])
 def on_ping(message):
