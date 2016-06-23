@@ -1,29 +1,29 @@
 # -*- coding: utf-8 -*-
 '''
-Código generado por la Comunidad Minka-IT para el bot *minbo*.
-TelegramBot: @MinkaITBot
-BotName: minbo
+Código generado por AlHerTa enbase al codigo de la Comunidad Minka-IT para el bot *minbo*.
+TelegramBot: @AlhetaBot
+BotName: alherta
 '''
 
 from py_expression_eval import Parser
-import telebot, os, aiml, sys, wikipedia
+import telebot, os, aiml, sys, wikipedia, texts, botstokens
 reload(sys)
 sys.setdefaultencoding('utf8')
 
 #wikipedia set
 wikipedia.set_lang("es")
 
-bot = telebot.TeleBot("TOKEN")
+bot = telebot.TeleBot(botstokens.tokens['alherta'])
 parser = Parser()
 
 # aiml: Cargar el kernel, setear valores y aprender conocimiento
 kernel = aiml.Kernel()
-kernel.setBotPredicate('name', 'Minbo')
-kernel.setBotPredicate('nombre_bot', 'Minbo')
-kernel.setBotPredicate('master', 'Minka')
-kernel.setBotPredicate('botmaster', 'Minka')
-kernel.setBotPredicate('ciudad', 'San Salvador de Jujuy')
-kernel.setBotPredicate('edad', '1')
+kernel.setBotPredicate('name', 'Alherta')
+kernel.setBotPredicate('nombre_bot', 'AlhetaBot')
+kernel.setBotPredicate('master', 'AlHerTa')
+kernel.setBotPredicate('botmaster', 'AlHerTa')
+kernel.setBotPredicate('ciudad', 'El Mundo')
+kernel.setBotPredicate('edad', '25')
 kernel.learn("aiml/sara/sara_srai_1.aiml")
 kernel.learn("aiml/sara/sara_srai_2.aiml")
 kernel.learn("aiml/sara/nombres.aiml")
@@ -31,8 +31,6 @@ kernel.learn("aiml/sara/default.aiml")
 kernel.learn("aiml/sara/numeros.aiml")
 kernel.learn("aiml/sara/sexo.aiml")
 kernel.learn("aiml/sara/sara.aiml")
-
-import texts
 
 def listener(messages):
     for m in messages:
@@ -61,24 +59,28 @@ def on_user_joins(message):
         print name
 
     chat_id = message.chat.id
-    bot.reply_to(message, text_messages['bienvenido'].format(name=name))
-#    bot.send_message(chat_id, text_messages['bienvenido'].format(name=name))
+    bot.reply_to(message, texts.text_messages['bienvenido'].format(name=name))
+#    bot.send_message(chat_id, texts.text_messages['bienvenido'].format(name=name))
 
 @bot.message_handler(commands=['info', 'help'])
 def on_info(message):
     chat_id = message.chat.id
-    #bot.reply_to(message, text_messages['info']) # respondemos con el mensaje correspondiente a info que está en el diccionario
-    bot.send_message(chat_id, texts.text_messages['info']) # respondemos con el mensaje correspondiente a info que está en el diccionario
+    #bot.reply_to(message, texts.text_messages['info']) # respondemos con el mensaje correspondiente a info que está en el diccionario
+    bot.send_message(chat_id, texts.text_message['info']) # respondemos con el mensaje correspondiente a info que está en el diccionario
+
+@bot.message_handler(commands=['hola', 'help'])
+def on_hola(message):
+    chat_id = message.chat.id
+    name += u" (@{})".format(message.username)
+    bot.send_message(chat_id, texts.text_message['hola'].format(name=name)) 
 
 @bot.message_handler(commands=["ping"])
 def on_ping(message):
     chat_id = message.chat.id
-    #bot.reply_to(message, "Aquí estoy, vivito y coleando!")
     bot.send_message(chat_id, "Aquí estoy, vivito y coleando!")
 
 @bot.message_handler(commands=['acercade'])
 def send_acercade(message):
-    #bot.reply_to(message, 'Somos la comunidad Minka-IT, un espacio formado por y para estudiantes de carreras informáticas\nde la Facultad de Ingeniería de la U.N.Ju. Aquí podrás plantear tus ideas, proyectos, compartir\ntu conocimiento y aprender cosas nuevas relacionadas con la informática.')
     chat_id = message.chat.id
     bot.send_message(chat_id, 'Somos la comunidad Minka-IT, un espacio formado por y para estudiantes de carreras informáticas\nde la Facultad de Ingeniería de la U.N.Ju. Aquí podrás plantear tus ideas, proyectos, compartir\ntu conocimiento y aprender cosas nuevas relacionadas con la informática.')
 
@@ -99,7 +101,7 @@ def calc(message):
     chat_id = message.chat.id
     param = message.text.split(' ',1) #separa el comando de los parametros  
     if len(param) == 1 or param[1]=="help":
-        bot.send_message(chat_id,text_messages['help_calc'])
+        bot.send_message(chat_id,texts.text_messages['help_calc'])
     else:
         try:    
             #bot.send_message(chat_id, ast.literal_eval(param[1]))
@@ -114,7 +116,7 @@ def chat(message):
     chat_id = message.chat.id
     param = message.text.split(' ',1) #separa el comando de los parametros
     if len(param) == 1 or param[1]=="help":
-        bot.send_message(chat_id,text_messages['help_chat'])
+        bot.send_message(chat_id,texts.text_messages['help_chat'])
     else:
         try:
             print "chat humano: " + param[1]
@@ -130,7 +132,7 @@ def wiki(message):
     chat_id = message.chat.id
     param = message.text.split(' ',1) #separa el comando de los parametros
     if len(param) == 1 or param[1]=="help":
-        bot.send_message(chat_id,text_messages['help_wiki'])
+        bot.send_message(chat_id,texts.text_messages['help_wiki'])
     else:
         bot.send_message(chat_id, "Consultando en Wikipedia...")
         try:

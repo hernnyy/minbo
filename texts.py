@@ -2,16 +2,13 @@
 
 text_messages = {
     'bienvenido':
-        'Bienvenid@, entusiasta {name}!\n\n'
-        'Este grupo es para mantener a todos los miembros de la comunidad Minka-IT conectados.\n'
-        'No dudes en plantear tus inquietudes aquí o en algunos de los canales de comunicación de Minka-IT!\n'
-        'Esperamos que disfrutes de formar parte del grupo :)',
+        'Bienvenid@, entusiasta {name}!\n\n',
 
     'info':
-        'Mi nombre es *minbo*,\n'
-        'Soy el bot que te brindará información acerca de la comunidad Minka-IT.\n'
-        'Estoy en etapa de desarrollo, no dudes en agregarme nuevas funcionalidades!\n'
-        'Mi código se encuentra en GitHub! repositorio temporal: https://github.com/jorgex9/minka-it.git',
+        'Mi nombre es *minbo*,\n',
+
+    'Hola':
+        'Hola {name}, que haces?,\n',
 
     'help_calc':
         'Uso\n'
@@ -45,9 +42,7 @@ text_messages = {
     'help_chat':
         'Puedes hablar conmigo si estas aburrid@.\n'
         'Soy un Chaterbot basado en la base de conocimiento de SARA.\n'
-        'Estoy implementado gracias a pyaiml.\n'
-        'Mi creador es la comunidad Minka-IT.\n'
-        'Proximamente mi creador me dotara de capacidad de aprendizaje en tiempo real.',
+        'Estoy implementado gracias a pyaiml.\n',
 
     'help_wiki':
         'Uso:\n'
