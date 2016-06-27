@@ -8,7 +8,7 @@ text_messages = {
         'Mi nombre es *minbo*,\n',
 
     'hola':
-        'Hola {name}, que haces?,\n',
+        'Hola @{name}, que haces?,\n',
 
     'help_calc':
         'Uso\n'
