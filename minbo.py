@@ -104,11 +104,15 @@ def send_documentos(message):
 def send_documentos(message):
     chat_id = message.chat.id
     conn = httplib2.Http()
-    headers = {}
-    headers['User-Agent'] = 'none'
-    headers['Accept-Encoding'] = 'gzip, deflate, br'
-    headers['Accept'] = 'text/html'
-    resp, content = conn.request("http://www.google.com/finance/converter?a=1000&from=BRL&to=ARS",method="HEAD")
+    headers = {
+        'Host': 'google.com',
+        'Connection': 'keep-alive',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.101 Safari/537.36',
+        'Accept-Encoding': 'gzip,deflate,sdch',
+        'Accept-Language': 'en-US,en;q=0.8'
+    }
+    resp, content = conn.request("http://www.google.com/finance/converter?a=1000&from=BRL&to=ARS",headers)
     bot.send_message(chat_id, content)
 
 @bot.message_handler(commands=['comm'])
