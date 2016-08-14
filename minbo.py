@@ -6,7 +6,9 @@ BotName: alherta
 '''
 
 from py_expression_eval import Parser
-import telebot, os, aiml, sys, wikipedia, texts, botstokens
+import telebot, os, aiml, sys, wikipedia
+import texts, botstokens
+import httplib2, commands
 reload(sys)
 sys.setdefaultencoding('utf8')
 
@@ -95,6 +97,17 @@ def send_documentos(message):
     chat_id = message.chat.id
     #bot.reply_to(message, "Minka en Facebook: http://bit.ly/1VGbO9g\nMinka en IRC: #minkait")
     bot.send_message(chat_id, "Minka en Facebook: http://bit.ly/1VGbO9g\nMinka en IRC: #minkait")
+
+@bot.message_handler(commands=['reales'])
+def send_documentos(message):
+    chat_id = message.chat.id
+    resp, content = httplib2.Http().request("http://www.google.com/finance/converter?a=1000&from=BRL&to=ARS")
+    bot.send_message(chat_id, content)
+
+@bot.message_handler(commands=['comm'])
+def send_documentos(message):
+    chat_id = message.chat.id
+    bot.send_message(chat_id, commands.getoutput('df -h'))
 
 @bot.message_handler(commands=['calc'])
 def calc(message):

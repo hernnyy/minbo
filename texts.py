@@ -5,7 +5,7 @@ text_messages = {
         'Bienvenid@, entusiasta {name}!\n\n',
 
     'info':
-        'Mi nombre es *minbo*,\n',
+        'Mi nombre es *alherta*,\n',
 
     'hola':
         'Hola @{name}, que haces?,\n',
