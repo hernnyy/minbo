@@ -8,7 +8,7 @@ BotName: alherta
 from py_expression_eval import Parser
 import telebot, os, aiml, sys, wikipedia
 import texts, botstokens
-import httplib2, commands
+import httplib2, commands, logging
 reload(sys)
 sys.setdefaultencoding('utf8')
 
@@ -16,6 +16,8 @@ sys.setdefaultencoding('utf8')
 wikipedia.set_lang("es")
 
 bot = telebot.TeleBot(botstokens.tokens['alherta'])
+logger = telebot.logger
+telebot.logger.setLevel(logging.DEBUG) 
 parser = Parser()
 
 # aiml: Cargar el kernel, setear valores y aprender conocimiento
@@ -39,7 +41,7 @@ def listener(messages):
         chat_id = m.chat.id # Obtenemos el ID del chat (cada chat tiene uno único)
         texto = m.text      # y el texto que se nos ha enviado
 #        print('ID: ' + str(chat_id) + ' MENSAJE: ' + texto) 
-        print("Nuevo mensaje recibido") # Sólo un mensaje en consola para que avise cuando haya un nuevo msj
+        logger.info("Nuevo mensaje recibido") # Sólo un mensaje en consola para que avise cuando haya un nuevo msj
 
 bot.set_update_listener(listener)
 
