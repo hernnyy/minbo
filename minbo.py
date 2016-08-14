@@ -17,7 +17,7 @@ wikipedia.set_lang("es")
 
 bot = telebot.TeleBot(botstokens.tokens['alherta'])
 logger = telebot.logger
-telebot.logger.setLevel(logging.DEBUG) 
+telebot.logger.setLevel(logging.INFO) 
 parser = Parser()
 
 # aiml: Cargar el kernel, setear valores y aprender conocimiento
@@ -103,7 +103,11 @@ def send_documentos(message):
 @bot.message_handler(commands=['reales'])
 def send_documentos(message):
     chat_id = message.chat.id
-    resp, content = httplib2.Http().request("http://www.google.com/finance/converter?a=1000&from=BRL&to=ARS")
+    conn = httplib2.Http()
+    headers['User-Agent'] = 'searchlight-client'
+    headers['Accept-Encoding'] = 'gzip, deflate, br'
+    headers['Accept'] = 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    resp, content = conn.request("http://www.google.com/finance/converter?a=1000&from=BRL&to=ARS",method="HEAD",headers)
     bot.send_message(chat_id, content)
 
 @bot.message_handler(commands=['comm'])
