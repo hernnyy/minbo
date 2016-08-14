@@ -104,10 +104,11 @@ def send_documentos(message):
 def send_documentos(message):
     chat_id = message.chat.id
     conn = httplib2.Http()
-    headers['User-Agent'] = 'searchlight-client'
+    headers = {}
+    headers['User-Agent'] = 'none'
     headers['Accept-Encoding'] = 'gzip, deflate, br'
-    headers['Accept'] = 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
-    resp, content = conn.request("http://www.google.com/finance/converter?a=1000&from=BRL&to=ARS",method="HEAD",headers)
+    headers['Accept'] = 'text/html'
+    resp, content = conn.request("http://www.google.com/finance/converter?a=1000&from=BRL&to=ARS",method="HEAD")
     bot.send_message(chat_id, content)
 
 @bot.message_handler(commands=['comm'])
