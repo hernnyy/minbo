@@ -8,7 +8,7 @@ BotName: alherta
 from py_expression_eval import Parser
 import telebot, os, aiml, sys, wikipedia
 import texts, botstokens
-import httplib2, commands, logging
+import httplib2, commands, logging, urllib2,urllib
 reload(sys)
 sys.setdefaultencoding('utf8')
 
@@ -105,15 +105,27 @@ def send_documentos(message):
     chat_id = message.chat.id
     conn = httplib2.Http()
     headers = {
-        'Host': 'google.com',
-        'Connection': 'keep-alive',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.101 Safari/537.36',
-        'Accept-Encoding': 'gzip,deflate,sdch',
-        'Accept-Language': 'en-US,en;q=0.8'
+	'content-type':'text/plain',
+	'Accept-Charset':'encoding=utf-8'
     }
-    resp, content = conn.request("http://www.google.com/finance/converter?a=1000&from=BRL&to=ARS",headers)
-    bot.send_message(chat_id, content)
+    url_ = 'https://www.google.com/finance/converter?a=1000&from=BRL&to=ARS'
+    query_args = { 'a':'1000', 'from':'BRL', 'to':'ARS' }
+    response = urllib2.urlopen(url_)
+    encoding = response.headers['content-type'].split('charset=')[-1]
+    ucontent = unicode(response.read(), encoding)
+    html = response.read()
+    response.close()  
+    #uri_ = '%s?%s' % (url_, urlencode('a=1000'))
+    #resp, content = conn.request(url_, "GET", headers)
+   # resp, content = conn.request("GET","http://www.google.com/finance/converter?a=1000&from=BRL&to=ARS",headers)
+    #for line in ucontent.encode('utf8'):
+#	print line
+    if ucontent.encode('utf8').find('currency_converter_result') != -1:
+        print 'findit'
+	print ucontent.encode('utf8').find('currency_converter_result')
+	valor = ucontent[ucontent.find('currency_converter_result')-50:]
+    #print ucontent.encode('utf8')
+    bot.send_message(chat_id,valor)
 
 @bot.message_handler(commands=['comm'])
 def send_documentos(message):
