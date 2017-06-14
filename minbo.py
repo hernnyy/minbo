@@ -109,7 +109,7 @@ def send_documentos(message):
 	'Accept-Charset':'encoding=utf-8'
     }
     url_ = 'https://www.google.com/finance/converter?a=1000&from=BRL&to=ARS'
-    query_args = { 'a':'1000', 'from':'BRL', 'to':'ARS' }
+    #query_args = { 'a':'1000', 'from':'BRL', 'to':'ARS' }
     response = urllib2.urlopen(url_)
     encoding = response.headers['content-type'].split('charset=')[-1]
     ucontent = unicode(response.read(), encoding)
@@ -123,7 +123,9 @@ def send_documentos(message):
     if ucontent.encode('utf8').find('currency_converter_result') != -1:
         print 'findit'
 	print ucontent.encode('utf8').find('currency_converter_result')
-	valor = ucontent[ucontent.find('currency_converter_result')-50:]
+	aux = ucontent[ucontent.find('currency_converter_result'):]
+	aux2 = aux[aux.find('<span class=bld>')+16:]
+	valor = aux2[:aux2.find('ARS')]
     #print ucontent.encode('utf8')
     bot.send_message(chat_id,valor)
 
