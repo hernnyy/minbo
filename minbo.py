@@ -132,7 +132,14 @@ def send_documentos(message):
 @bot.message_handler(commands=['comm'])
 def send_documentos(message):
     chat_id = message.chat.id
-    bot.send_message(chat_id, commands.getoutput('df -h'))
+    param = message.text.split(' ',1)
+    if len(param) == 1 or param[1]=="help":
+        bot.send_message(chat_id,texts.text_messages['help_calc'])
+    else:
+    	execute = ''
+    	for x in xrange(1,len(param)):
+    		execute = param[1] + ' ';
+    	bot.send_message(chat_id, commands.getoutput(execute))
 
 @bot.message_handler(commands=['calc'])
 def calc(message):
