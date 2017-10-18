@@ -129,14 +129,23 @@ def send_documentos(message):
     #print ucontent.encode('utf8')
     bot.send_message(chat_id,valor)
 
-@bot.message_handler(commands=['comm'])
+@bot.message_handler(commands=['comm','command'])
 def send_documentos(message):
     chat_id = message.chat.id
     param = message.text.split(' ',1)
     if len(param) == 1 or param[1]=="help":
-        bot.send_message(chat_id,texts.text_messages['help_calc'])
+        bot.send_message(chat_id,texts.text_messages['help_comm'])
     else:
     	bot.send_message(chat_id, commands.getoutput(param[1]))
+
+@bot.message_handler(commands=['drawx','draw'])
+def send_documentos(message):
+    chat_id = message.chat.id
+    param = message.text.split(' ',1)
+    if len(param) == 1 or param[1]=="help":
+        bot.send_message(chat_id,texts.text_messages['help_draw'])
+    else:
+    	bot.send_message(chat_id, commands.getoutput('plot' + param[1]))
 
 @bot.message_handler(commands=['calc'])
 def calc(message):

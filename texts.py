@@ -10,6 +10,23 @@ text_messages = {
     'hola':
         'Hola @{name}, que haces?,\n',
 
+    'help_comm':
+        'En esta funcion puedo ejecutar algunos comandos de linux.\n'
+        'Actualemnte y por una cuestion de seguridad solo puedo ejecutar algunos comandos simples.\n'
+        'Sera un placer ejecutar los siguientes commandos:.\n',
+        'ls\n',
+        'lshw\n',
+        'df\n',
+        'man\n',
+        
+    'help_draw':
+        'En esta funcion puedo dibujar algunas funciones matematicas.\n'
+        'Sera un placer dibujar las siguientes funciones combinadas:.\n',
+        'x\n',
+        'sin(x)\n',
+        'x^2\n',
+        'cos(x)\n',
+
     'help_calc':
         'Uso\n'
         '/calc expr\n'
