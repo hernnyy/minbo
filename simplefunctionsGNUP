@@ -3,7 +3,7 @@ set key left nobox
 set samples 100
 set style data points
 
-set terminal png size 400,300 enhanced font "Helvetica,8"
+set terminal png enhanced font "Helvetica,8"
 set output 'output.png'
 
 plot [-10:10] sin(x),atan(x),cos(atan(x))
