@@ -146,13 +146,13 @@ def send_documentos(message):
     if len(param) == 1 or param[1]=="help":
         bot.send_message(chat_id,texts.text_messages['help_draw'])
     else:
-	commands.getoutput('gnuplot -c simplefunctionsGNUP')
-	#commands.getoutput("gnuplot -e 'plot [-10:10] '"+param[1])
-	img = open('output.png', 'rb')
-	bot.send_chat_action(chat_id, 'upload_photo')
-	bot.send_photo(chat_id, img, reply_to_message_id=msgid)
-	img.close()
-	#bot.send_message(chat_id, )
+        commands.getoutput('gnuplot -c simplefunctionsGNUP')
+        #commands.getoutput("gnuplot -e 'plot [-10:10] '"+param[1])
+        img = open('output.png', 'rb')
+        bot.send_chat_action(chat_id, 'upload_photo')
+        bot.send_photo(chat_id, img, reply_to_message_id=msgid)
+        img.close()
+        #bot.send_message(chat_id, )
 
 @bot.message_handler(commands=['calc'])
 def calc(message):
