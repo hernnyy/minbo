@@ -146,6 +146,15 @@ def send_documentos(message):
     if len(param) == 1 or param[1]=="help":
         bot.send_message(chat_id,texts.text_messages['help_draw'])
     else:
+        readFile = open("simplefunctionsGNUP")
+        lines = readFile.readlines()
+        readFile.close()
+        w = open("simplefunctionsGNUP",'w')
+        w.writelines([item for item in lines[:-1]])
+        w.close()
+        with open('simplefunctionsGNUP', 'a') as file:
+            file.write('plot [-10:10] '+param[1])
+        #file.close()
 	commands.getoutput('gnuplot -c simplefunctionsGNUP')
 	#commands.getoutput("gnuplot -e 'plot [-10:10] '"+param[1])
 	img = open('output.png', 'rb')

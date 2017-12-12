@@ -6,4 +6,4 @@ set style data points
 set terminal png enhanced font "Helvetica,8"
 set output 'output.png'
 
-plot [-10:10] sin(x),atan(x),cos(atan(x))
+plot [-10:10] x**2,x**7

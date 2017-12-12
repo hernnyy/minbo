@@ -22,10 +22,26 @@ text_messages = {
     'help_draw':
         'En esta funcion puedo dibujar algunas funciones matematicas.\n'
         'Sera un placer dibujar las siguientes funciones combinadas:.\n'
-        'x\n'
-        'sin(x)\n'
-        'x^2\n'
-        'cos(x)\n',
+        'abs(x)            absolute value of x, |x|\n'
+        'acos(x)           arc-cosine  of x\n'
+        'asin(x)           arc-sine    of x\n'
+        'atan(x)           arc-tangent of x\n'
+        'cos(x)            cosine      of x,  x is in radians.\n'
+        'cosh(x)           hyperbolic cosine of x, x is in radians\n'
+        'erf(x)            error function of x\n'
+        'exp(x)            exponential function of x, base e\n'
+        'inverf(x)         inverse error function of x\n'
+        'invnorm(x)        inverse normal distribution of x\n'
+        'log(x)            log of x, base e\n'
+        'log10(x)          log of x, base 10\n'
+        'norm(x)           normal Gaussian distribution function\n'
+        'rand(x)           pseudo-random number generator\n'
+        'sgn(x)            1 if x > 0, -1 if x < 0, 0 if x=0\n'
+        'sin(x)            sine      of x, x is in radians\n'
+        'sinh(x)           hyperbolic sine of x, x is in radians\n'
+        'sqrt(x)           the square root of x\n'
+        'tan(x)            tangent of x, x is in radians\n'
+        'tanh(x)           hyperbolic tangent of x, x is in radiansx\n',
 
     'help_calc':
         'Uso\n'
