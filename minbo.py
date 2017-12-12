@@ -8,9 +8,9 @@ BotName: alherta
 from py_expression_eval import Parser
 import telebot, os, aiml, sys, wikipedia
 import texts, botstokens
-import httplib2, commands, logging, urllib2,urllib
-reload(sys)
-sys.setdefaultencoding('utf8')
+import httplib2, logging, urllib3,urllib
+#reload(sys)
+#sys.setdefaultencoding('utf8')
 
 #wikipedia set
 wikipedia.set_lang("es")
@@ -21,20 +21,20 @@ telebot.logger.setLevel(logging.INFO)
 parser = Parser()
 
 # aiml: Cargar el kernel, setear valores y aprender conocimiento
-kernel = aiml.Kernel()
-kernel.setBotPredicate('name', 'Alherta')
-kernel.setBotPredicate('nombre_bot', 'AlhetaBot')
-kernel.setBotPredicate('master', 'AlHerTa')
-kernel.setBotPredicate('botmaster', 'AlHerTa')
-kernel.setBotPredicate('ciudad', 'El Mundo')
-kernel.setBotPredicate('edad', '25')
-kernel.learn("aiml/sara/sara_srai_1.aiml")
-kernel.learn("aiml/sara/sara_srai_2.aiml")
-kernel.learn("aiml/sara/nombres.aiml")
-kernel.learn("aiml/sara/default.aiml")
-kernel.learn("aiml/sara/numeros.aiml")
-kernel.learn("aiml/sara/sexo.aiml")
-kernel.learn("aiml/sara/sara.aiml")
+#kernel = aiml.kernel()
+#kernel.setBotPredicate('name', 'Alherta')
+#kernel.setBotPredicate('nombre_bot', 'AlhetaBot')
+#kernel.setBotPredicate('master', 'AlHerTa')
+#kernel.setBotPredicate('botmaster', 'AlHerTa')
+#kernel.setBotPredicate('ciudad', 'El Mundo')
+#kernel.setBotPredicate('edad', '25')
+#kernel.learn("aiml/sara/sara_srai_1.aiml")
+#kernel.learn("aiml/sara/sara_srai_2.aiml")
+#kernel.learn("aiml/sara/nombres.aiml")
+#kernel.learn("aiml/sara/default.aiml")
+#kernel.learn("aiml/sara/numeros.aiml")
+#kernel.learn("aiml/sara/sexo.aiml")
+#kernel.learn("aiml/sara/sara.aiml")
 
 def listener(messages):
     for m in messages:
@@ -49,18 +49,18 @@ bot.set_update_listener(listener)
 @bot.message_handler(content_types=['new_chat_member'])
 def on_user_joins(message):
     name = message.new_chat_member.first_name
-    print name
+    print (name)
     #if hasattr(message.new_chat_member, 'last_name') and message.new_chat_member.last_name is not None:
     if message.new_chat_member.last_name is not None:
         name += u" {}".format(message.new_chat_member.last_name)
-        print "Nuevo miembro en el grupo"
-        print name
+        print ("Nuevo miembro en el grupo")
+        print (name)
 
     #if hasattr(message.new_chat_member, 'username') and message.new_chat_member.username is not None:
     if message.new_chat_member.username is not None:
         name += u" (@{})".format(message.new_chat_member.username)
-        print "Nuevo miembro en el grupo"
-        print name
+        print ("Nuevo miembro en el grupo")
+        print (name)
 
     chat_id = message.chat.id
     bot.reply_to(message, texts.text_messages['bienvenido'].format(name=name))
@@ -110,7 +110,7 @@ def send_documentos(message):
     }
     url_ = 'https://www.google.com/finance/converter?a=1000&from=BRL&to=ARS'
     #query_args = { 'a':'1000', 'from':'BRL', 'to':'ARS' }
-    response = urllib2.urlopen(url_)
+    response = urllib3.urlopen(url_)
     encoding = response.headers['content-type'].split('charset=')[-1]
     ucontent = unicode(response.read(), encoding)
     html = response.read()
@@ -121,11 +121,11 @@ def send_documentos(message):
     #for line in ucontent.encode('utf8'):
 #	print line
     if ucontent.encode('utf8').find('currency_converter_result') != -1:
-        print 'findit'
-	print ucontent.encode('utf8').find('currency_converter_result')
-	aux = ucontent[ucontent.find('currency_converter_result'):]
-	aux2 = aux[aux.find('<span class=bld>')+16:]
-	valor = aux2[:aux2.find('ARS')]
+        print ('findit')
+        print (ucontent.encode('utf8').find('currency_converter_result'))
+        aux = ucontent[ucontent.find('currency_converter_result'):]
+        aux2 = aux[aux.find('<span class=bld>')+16:]
+        valor = aux2[:aux2.find('ARS')]
     #print ucontent.encode('utf8')
     bot.send_message(chat_id,valor)
 
@@ -136,7 +136,7 @@ def send_documentos(message):
     if len(param) == 1 or param[1]=="help":
         bot.send_message(chat_id,texts.text_messages['help_comm'])
     else:
-    	bot.send_message(chat_id, commands.getoutput(param[1]))
+    	bot.send_message(chat_id, os.system(param[1]))
 
 @bot.message_handler(commands=['drawx','draw'])
 def send_documentos(message):
@@ -155,13 +155,13 @@ def send_documentos(message):
         with open('simplefunctionsGNUP', 'a') as file:
             file.write('plot [-10:10] '+param[1])
         #file.close()
-	commands.getoutput('gnuplot -c simplefunctionsGNUP')
-	#commands.getoutput("gnuplot -e 'plot [-10:10] '"+param[1])
-	img = open('output.png', 'rb')
-	bot.send_chat_action(chat_id, 'upload_photo')
-	bot.send_photo(chat_id, img, reply_to_message_id=msgid)
-	img.close()
-	#bot.send_message(chat_id, )
+        os.system('gnuplot -c simplefunctionsGNUP')
+        #commands.getoutput("gnuplot -e 'plot [-10:10] '"+param[1])
+        img = open('output.png', 'rb')
+        bot.send_chat_action(chat_id, 'upload_photo')
+        bot.send_photo(chat_id, img, reply_to_message_id=msgid)
+        img.close()
+    #bot.send_message(chat_id, )
 
 @bot.message_handler(commands=['calc'])
 def calc(message):
@@ -173,10 +173,10 @@ def calc(message):
         try:    
             #bot.send_message(chat_id, ast.literal_eval(param[1]))
             bot.send_message(chat_id,parser.parse(param[1]).evaluate({}))
-            print "calc handler sucess: " + param[1]
+            print ("calc handler sucess: " + param[1])
         except Exception as e:
             bot.send_message(chat_id, "¡¡No podes calcular eso!!")
-            print "calc handler error: " + str(e) + ": " + param[1]
+            print ("calc handler error: " + str(e) + ": " + param[1])
 
 @bot.message_handler(commands=['chat','minbo'])
 def chat(message):
@@ -186,12 +186,12 @@ def chat(message):
         bot.send_message(chat_id,texts.text_messages['help_chat'])
     else:
         try:
-            print "chat humano: " + param[1]
-            respuesta=kernel.respond(param[1])
-            print "chat robot: " + respuesta
+            print ("chat humano: " + param[1])
+            respuesta=""#kernel.respond(param[1])
+            print ("chat robot: " + respuesta)
             bot.send_message(chat_id,respuesta)
-        except Exception, e:
-            print e
+        except Exception as e:
+            print (e)
             bot.send_message(chat_id,"Tengo un bug en mi estomago!")
 
 @bot.message_handler(commands=['wiki','wikipedia'])
@@ -211,8 +211,8 @@ def wiki(message):
             bot.send_message(chat_id, '\n'.join(e.options))
         except wikipedia.exceptions.PageError as e:
             bot.send_message(chat_id, "No se encontro ninguna pagina, intenta con otra consulta!")
-        except Exception, e:
-            print e
+        except Exception as e:
+            print (e)
             bot.send_message(chat_id,"Tengo un bug en mi estomago!")
 
     
