@@ -9,6 +9,7 @@ Ademas tambien py_expression_eval y de aiml, para que minbo pueda usar las apaci
 	pip install py_expression_eval
 	pip install aiml
 	pip install wikipedia
+	pip install suds
 
 ## Token
 existe un archivo ignorado al cual se le debera asignar el token del bot.

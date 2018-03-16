@@ -6,6 +6,7 @@ BotName: alherta
 '''
 
 from py_expression_eval import Parser
+from suds.client import Client
 import telebot, os, aiml, sys, wikipedia
 import texts, botstokens
 import httplib2, commands, logging, urllib2,urllib
@@ -100,34 +101,46 @@ def send_documentos(message):
     #bot.reply_to(message, "Minka en Facebook: http://bit.ly/1VGbO9g\nMinka en IRC: #minkait")
     bot.send_message(chat_id, "Minka en Facebook: http://bit.ly/1VGbO9g\nMinka en IRC: #minkait")
 
-@bot.message_handler(commands=['reales'])
+@bot.message_handler(commands=['cotiza'])
 def send_documentos(message):
     chat_id = message.chat.id
-    conn = httplib2.Http()
-    headers = {
-	'content-type':'text/plain',
-	'Accept-Charset':'encoding=utf-8'
-    }
-    url_ = 'https://www.google.com/finance/converter?a=1000&from=BRL&to=ARS'
-    #query_args = { 'a':'1000', 'from':'BRL', 'to':'ARS' }
-    response = urllib2.urlopen(url_)
-    encoding = response.headers['content-type'].split('charset=')[-1]
-    ucontent = unicode(response.read(), encoding)
-    html = response.read()
-    response.close()  
-    #uri_ = '%s?%s' % (url_, urlencode('a=1000'))
-    #resp, content = conn.request(url_, "GET", headers)
-   # resp, content = conn.request("GET","http://www.google.com/finance/converter?a=1000&from=BRL&to=ARS",headers)
-    #for line in ucontent.encode('utf8'):
-#	print line
-    if ucontent.encode('utf8').find('currency_converter_result') != -1:
-        print 'findit'
-	print ucontent.encode('utf8').find('currency_converter_result')
-	aux = ucontent[ucontent.find('currency_converter_result'):]
-	aux2 = aux[aux.find('<span class=bld>')+16:]
-	valor = aux2[:aux2.find('ARS')]
-    #print ucontent.encode('utf8')
-    bot.send_message(chat_id,valor)
+    client = Client(url='http://www.banguat.gob.gt/variables/ws/TipoCambio.asmx?WSDL',proxy = proxySettings)
+    ##client.set_options()
+    request = client.factory.create('tns:Variables')
+    request.variable = '29'
+    response = client.service.Variables(request)
+
+	cotizacion = response.CambioDia.Var[0].fecha + " Compra: " +response.CambioDia.Var[0].compra+ " Venta: " + response.CambioDia.Var[0].venta
+    bot.send_message(chat_id,cotizacion)
+
+# @bot.message_handler(commands=['reales'])
+# def send_documentos(message):
+#     chat_id = message.chat.id
+#     conn = httplib2.Http()
+#     headers = {
+# 	'content-type':'text/plain',
+# 	'Accept-Charset':'encoding=utf-8'
+#     }
+#     url_ = 'https://www.google.com/finance/converter?a=1000&from=BRL&to=ARS'
+#     #query_args = { 'a':'1000', 'from':'BRL', 'to':'ARS' }
+#     response = urllib2.urlopen(url_)
+#     encoding = response.headers['content-type'].split('charset=')[-1]
+#     ucontent = unicode(response.read(), encoding)
+#     html = response.read()
+#     response.close()  
+#     #uri_ = '%s?%s' % (url_, urlencode('a=1000'))
+#     #resp, content = conn.request(url_, "GET", headers)
+#    # resp, content = conn.request("GET","http://www.google.com/finance/converter?a=1000&from=BRL&to=ARS",headers)
+#     #for line in ucontent.encode('utf8'):
+# #	print line
+#     if ucontent.encode('utf8').find('currency_converter_result') != -1:
+#         print 'findit'
+# 	print ucontent.encode('utf8').find('currency_converter_result')
+# 	aux = ucontent[ucontent.find('currency_converter_result'):]
+# 	aux2 = aux[aux.find('<span class=bld>')+16:]
+# 	valor = aux2[:aux2.find('ARS')]
+#     #print ucontent.encode('utf8')
+#     bot.send_message(chat_id,valor)
 
 @bot.message_handler(commands=['comm','command'])
 def send_documentos(message):
