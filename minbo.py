@@ -21,6 +21,9 @@ logger = telebot.logger
 telebot.logger.setLevel(logging.INFO) 
 parser = Parser()
 
+client = Client(url='http://www.banguat.gob.gt/variables/ws/TipoCambio.asmx?WSDL')
+##client.set_options()
+
 # aiml: Cargar el kernel, setear valores y aprender conocimiento
 kernel = aiml.Kernel()
 kernel.setBotPredicate('name', 'Alherta')
@@ -96,21 +99,39 @@ def send_documentos(message):
     bot.send_message(chat_id, "Aquí puedes encontrar los documentos de la comunidad Minka-IT:\nhttp://bit.ly/24bon1o")
 
 @bot.message_handler(commands=['canales'])
-def send_documentos(message):
+def send_canales(message):
     chat_id = message.chat.id
     #bot.reply_to(message, "Minka en Facebook: http://bit.ly/1VGbO9g\nMinka en IRC: #minkait")
     bot.send_message(chat_id, "Minka en Facebook: http://bit.ly/1VGbO9g\nMinka en IRC: #minkait")
 
-@bot.message_handler(commands=['cotiza'])
-def send_documentos(message):
+@bot.message_handler(commands=['dolar'])
+def send_dolar(message):
     chat_id = message.chat.id
-    client = Client(url='http://www.banguat.gob.gt/variables/ws/TipoCambio.asmx?WSDL')
-    ##client.set_options()
     request = client.factory.create('tns:Variables')
     request.variable = '29'
     response = client.service.Variables(request)
     cotizacion = str(response.CambioDia.Var[0].fecha) + "\nCompra: $" +str(response.CambioDia.Var[0].compra)+ "\nVenta: $" + str(response.CambioDia.Var[0].venta)
     bot.send_message(chat_id,cotizacion)
+
+@bot.message_handler(commands=['tecla'])
+def send_tecla(message):
+    chat_id = message.chat.id
+    markup = types.ReplyKeyboardMarkup(row_width=2)
+    itembtn1 = types.KeyboardButton(text='apple')
+    itembtn2 = types.KeyboardButton('v')
+    itembtn3 = types.KeyboardButton('d')
+    markup.add(itembtn1, itembtn2, itembtn3)
+    bot.send_message(chat_id, "Choose one letter:", reply_markup=markup)
+
+@bot.message_handler(commands=['cotiza'])
+def send_cotiza(message):
+    chat_id = message.chat.id
+    # keyboard = [[InlineKeyboardButton("Argentina", callback_data='29'), InlineKeyboardButton("Brasil", callback_data='13')]]
+
+    # markup = InlineKeyboardMarkup(keyboard)
+
+    # bot.send_message(chat_id, "Choose one letter:", reply_markup=markup)
+    bot.send_message(chat_id,"cotizacion")
 
 # @bot.message_handler(commands=['reales'])
 # def send_documentos(message):
@@ -142,7 +163,7 @@ def send_documentos(message):
 #     bot.send_message(chat_id,valor)
 
 @bot.message_handler(commands=['comm','command'])
-def send_documentos(message):
+def send_command(message):
     chat_id = message.chat.id
     param = message.text.split(' ',1)
     if len(param) == 1 or param[1]=="help":
@@ -151,7 +172,7 @@ def send_documentos(message):
     	bot.send_message(chat_id, commands.getoutput(param[1]))
 
 @bot.message_handler(commands=['drawx','draw'])
-def send_documentos(message):
+def send_draw(message):
     chat_id = message.chat.id
     msgid = message.message_id
     param = message.text.split(' ',1)
