@@ -104,13 +104,12 @@ def send_documentos(message):
 @bot.message_handler(commands=['cotiza'])
 def send_documentos(message):
     chat_id = message.chat.id
-    client = Client(url='http://www.banguat.gob.gt/variables/ws/TipoCambio.asmx?WSDL',proxy = proxySettings)
+    client = Client(url='http://www.banguat.gob.gt/variables/ws/TipoCambio.asmx?WSDL')
     ##client.set_options()
     request = client.factory.create('tns:Variables')
     request.variable = '29'
     response = client.service.Variables(request)
-
-	cotizacion = response.CambioDia.Var[0].fecha + " Compra: " +response.CambioDia.Var[0].compra+ " Venta: " + response.CambioDia.Var[0].venta
+    cotizacion = str(response.CambioDia.Var[0].fecha) + "\nCompra: $" +str(response.CambioDia.Var[0].compra)+ "\nVenta: $" + str(response.CambioDia.Var[0].venta)
     bot.send_message(chat_id,cotizacion)
 
 # @bot.message_handler(commands=['reales'])
