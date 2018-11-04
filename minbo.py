@@ -129,10 +129,21 @@ def send_tecla(message):
     bot.send_message(chat_id, "Choose one letter:", reply_markup=markup)
 
 @bot.message_handler(commands=['bitcoins'])
-def send_dolar(message):
+def send_bitcoins(message):
     chat_id = message.chat.id
     buys = conn.call('GET', '/buy-bitcoins-online/ARS/.json').json()
-    bot.send_message(chat_id,str(buys["data"]["ad_list"][0]))
+    maxadd = minadd = buys["data"]["ad_list"][0]
+    maxval = float(0);
+    minval = float(minadd["data"]["temp_price_usd"]);
+    for adds in buys["data"]["ad_list"]:
+        cval = float(adds["data"]["temp_price_usd"])
+        if cval > maxval:
+            maxval = cval
+            maxadd = adds
+        elif cval < minval:
+            minval = cval
+            minadd = adds
+    bot.send_message(chat_id,str("MAX: "+str(maxadd)+"\nMIN: "+str(minadd)))
 
 @bot.message_handler(commands=['cotiza'])
 def send_cotiza(message):
@@ -149,8 +160,8 @@ def send_cotiza(message):
 #     chat_id = message.chat.id
 #     conn = httplib2.Http()
 #     headers = {
-# 	'content-type':'text/plain',
-# 	'Accept-Charset':'encoding=utf-8'
+#   'content-type':'text/plain',
+#   'Accept-Charset':'encoding=utf-8'
 #     }
 #     url_ = 'https://www.google.com/finance/converter?a=1000&from=BRL&to=ARS'
 #     #query_args = { 'a':'1000', 'from':'BRL', 'to':'ARS' }
@@ -163,13 +174,13 @@ def send_cotiza(message):
 #     #resp, content = conn.request(url_, "GET", headers)
 #    # resp, content = conn.request("GET","http://www.google.com/finance/converter?a=1000&from=BRL&to=ARS",headers)
 #     #for line in ucontent.encode('utf8'):
-# #	print line
+# # print line
 #     if ucontent.encode('utf8').find('currency_converter_result') != -1:
 #         print 'findit'
-# 	print ucontent.encode('utf8').find('currency_converter_result')
-# 	aux = ucontent[ucontent.find('currency_converter_result'):]
-# 	aux2 = aux[aux.find('<span class=bld>')+16:]
-# 	valor = aux2[:aux2.find('ARS')]
+#   print ucontent.encode('utf8').find('currency_converter_result')
+#   aux = ucontent[ucontent.find('currency_converter_result'):]
+#   aux2 = aux[aux.find('<span class=bld>')+16:]
+#   valor = aux2[:aux2.find('ARS')]
 #     #print ucontent.encode('utf8')
 #     bot.send_message(chat_id,valor)
 
@@ -180,7 +191,7 @@ def send_command(message):
     if len(param) == 1 or param[1]=="help":
         bot.send_message(chat_id,texts.text_messages['help_comm'])
     else:
-    	bot.send_message(chat_id, commands.getoutput(param[1]))
+        bot.send_message(chat_id, commands.getoutput(param[1]))
 
 @bot.message_handler(commands=['drawx','draw'])
 def send_draw(message):
@@ -199,13 +210,13 @@ def send_draw(message):
         with open('simplefunctionsGNUP', 'a') as file:
             file.write('plot [-10:10] '+param[1])
         #file.close()
-	commands.getoutput('gnuplot -c simplefunctionsGNUP')
-	#commands.getoutput("gnuplot -e 'plot [-10:10] '"+param[1])
-	img = open('output.png', 'rb')
-	bot.send_chat_action(chat_id, 'upload_photo')
-	bot.send_photo(chat_id, img, reply_to_message_id=msgid)
-	img.close()
-	#bot.send_message(chat_id, )
+    commands.getoutput('gnuplot -c simplefunctionsGNUP')
+    #commands.getoutput("gnuplot -e 'plot [-10:10] '"+param[1])
+    img = open('output.png', 'rb')
+    bot.send_chat_action(chat_id, 'upload_photo')
+    bot.send_photo(chat_id, img, reply_to_message_id=msgid)
+    img.close()
+    #bot.send_message(chat_id, )
 
 @bot.message_handler(commands=['calc'])
 def calc(message):
