@@ -7,16 +7,21 @@ BotName: alherta
 
 from py_expression_eval import Parser
 from suds.client import Client
+from lbcapi import api
 import telebot, os, aiml, sys, wikipedia
 import texts, botstokens
 import httplib2, commands, logging, urllib2,urllib
+
+
 reload(sys)
 sys.setdefaultencoding('utf8')
 
 #wikipedia set
 wikipedia.set_lang("es")
 
+conn = api.hmac(botstokens.tokens['hmac_key'], botstokens.tokens['hmac_secret'])
 bot = telebot.TeleBot(botstokens.tokens['alherta'])
+
 logger = telebot.logger
 telebot.logger.setLevel(logging.INFO) 
 parser = Parser()
@@ -122,6 +127,12 @@ def send_tecla(message):
     itembtn3 = types.KeyboardButton('d')
     markup.add(itembtn1, itembtn2, itembtn3)
     bot.send_message(chat_id, "Choose one letter:", reply_markup=markup)
+
+@bot.message_handler(commands=['bitcoins'])
+def send_dolar(message):
+    chat_id = message.chat.id
+    buys = conn.call('GET', '/buy-bitcoins-online/ARS/.json').json()
+    bot.send_message(chat_id,str(buys["data"]["ad_list"][0]))
 
 @bot.message_handler(commands=['cotiza'])
 def send_cotiza(message):
