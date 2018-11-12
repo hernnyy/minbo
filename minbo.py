@@ -11,6 +11,7 @@ from lbcapi import api
 import telebot, os, aiml, sys, wikipedia
 import texts, botstokens
 import httplib2, commands, logging, urllib2,urllib
+from telebot import types
 
 
 reload(sys)
@@ -120,12 +121,16 @@ def send_dolar(message):
 
 @bot.message_handler(commands=['tecla'])
 def send_tecla(message):
+    #markup = types.ReplyKeyboardRemove(selective=False)
     chat_id = message.chat.id
     markup = types.ReplyKeyboardMarkup(row_width=2)
     itembtn1 = types.KeyboardButton(text='apple')
-    itembtn2 = types.KeyboardButton('v')
-    itembtn3 = types.KeyboardButton('d')
-    markup.add(itembtn1, itembtn2, itembtn3)
+    itembtn2 = types.KeyboardButton('/bitcoins')
+    itembtn3 = types.KeyboardButton('/dolar')
+    itembtn4 = types.KeyboardButton('/tecla')
+    itembtn5 = types.KeyboardButton('/draw sin(x)')
+    itembtn6 = types.KeyboardButton('/cotiza')
+    markup.add(itembtn1, itembtn2, itembtn3, itembtn4, itembtn5, itembtn6)
     bot.send_message(chat_id, "Choose one letter:", reply_markup=markup)
 
 @bot.message_handler(commands=['bitcoins'])
@@ -143,7 +148,8 @@ def send_bitcoins(message):
         elif cval < minval:
             minval = cval
             minadd = adds
-    bot.send_message(chat_id,str("MAX: "+str(maxadd)+"\nMIN: "+str(minadd)))
+    bot.send_message(chat_id,"MAXIMO:\n\n"+str(maxadd))
+    bot.send_message(chat_id,"MINIMO:\n\n"+str(minadd))
 
 @bot.message_handler(commands=['cotiza'])
 def send_cotiza(message):
@@ -272,4 +278,4 @@ def wiki(message):
 
     
 
-bot.polling(none_stop=True)       # Iniciamos nuestro bot para que esté atento a los mensajes
+bot.polling(none_stop=True,timeout=120)       # Iniciamos nuestro bot para que esté atento a los mensajes
