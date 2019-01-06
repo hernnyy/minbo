@@ -6,19 +6,29 @@ BotName: alherta
 '''
 
 from py_expression_eval import Parser
+from suds.client import Client
+from lbcapi import api
 import telebot, os, aiml, sys, wikipedia
 import texts, botstokens
-import httplib2, logging, urllib3,urllib
-#reload(sys)
-#sys.setdefaultencoding('utf8')
+import httplib2, commands, logging, urllib2,urllib
+from telebot import types
+
+
+reload(sys)
+sys.setdefaultencoding('utf8')
 
 #wikipedia set
 wikipedia.set_lang("es")
 
+conn = api.hmac(botstokens.tokens['hmac_key'], botstokens.tokens['hmac_secret'])
 bot = telebot.TeleBot(botstokens.tokens['alherta'])
+
 logger = telebot.logger
 telebot.logger.setLevel(logging.INFO) 
 parser = Parser()
+
+client = Client(url='http://www.banguat.gob.gt/variables/ws/TipoCambio.asmx?WSDL')
+##client.set_options()
 
 # aiml: Cargar el kernel, setear valores y aprender conocimiento
 #kernel = aiml.kernel()
@@ -95,42 +105,93 @@ def send_documentos(message):
     bot.send_message(chat_id, "Aquí puedes encontrar los documentos de la comunidad Minka-IT:\nhttp://bit.ly/24bon1o")
 
 @bot.message_handler(commands=['canales'])
-def send_documentos(message):
+def send_canales(message):
     chat_id = message.chat.id
     #bot.reply_to(message, "Minka en Facebook: http://bit.ly/1VGbO9g\nMinka en IRC: #minkait")
     bot.send_message(chat_id, "Minka en Facebook: http://bit.ly/1VGbO9g\nMinka en IRC: #minkait")
 
-@bot.message_handler(commands=['reales'])
-def send_documentos(message):
+@bot.message_handler(commands=['dolar'])
+def send_dolar(message):
     chat_id = message.chat.id
-    conn = httplib2.Http()
-    headers = {
-	'content-type':'text/plain',
-	'Accept-Charset':'encoding=utf-8'
-    }
-    url_ = 'https://www.google.com/finance/converter?a=1000&from=BRL&to=ARS'
-    #query_args = { 'a':'1000', 'from':'BRL', 'to':'ARS' }
-    response = urllib3.urlopen(url_)
-    encoding = response.headers['content-type'].split('charset=')[-1]
-    ucontent = unicode(response.read(), encoding)
-    html = response.read()
-    response.close()  
-    #uri_ = '%s?%s' % (url_, urlencode('a=1000'))
-    #resp, content = conn.request(url_, "GET", headers)
-   # resp, content = conn.request("GET","http://www.google.com/finance/converter?a=1000&from=BRL&to=ARS",headers)
-    #for line in ucontent.encode('utf8'):
-#	print line
-    if ucontent.encode('utf8').find('currency_converter_result') != -1:
-        print ('findit')
-        print (ucontent.encode('utf8').find('currency_converter_result'))
-        aux = ucontent[ucontent.find('currency_converter_result'):]
-        aux2 = aux[aux.find('<span class=bld>')+16:]
-        valor = aux2[:aux2.find('ARS')]
-    #print ucontent.encode('utf8')
-    bot.send_message(chat_id,valor)
+    request = client.factory.create('tns:Variables')
+    request.variable = '29'
+    response = client.service.Variables(request)
+    cotizacion = str(response.CambioDia.Var[0].fecha) + "\nCompra: $" +str(response.CambioDia.Var[0].compra)+ "\nVenta: $" + str(response.CambioDia.Var[0].venta)
+    bot.send_message(chat_id,cotizacion)
+
+@bot.message_handler(commands=['tecla'])
+def send_tecla(message):
+    #markup = types.ReplyKeyboardRemove(selective=False)
+    chat_id = message.chat.id
+    markup = types.ReplyKeyboardMarkup(row_width=2)
+    itembtn1 = types.KeyboardButton(text='apple')
+    itembtn2 = types.KeyboardButton('/bitcoins')
+    itembtn3 = types.KeyboardButton('/dolar')
+    itembtn4 = types.KeyboardButton('/tecla')
+    itembtn5 = types.KeyboardButton('/draw sin(x)')
+    itembtn6 = types.KeyboardButton('/cotiza')
+    markup.add(itembtn1, itembtn2, itembtn3, itembtn4, itembtn5, itembtn6)
+    bot.send_message(chat_id, "Choose one letter:", reply_markup=markup)
+
+@bot.message_handler(commands=['bitcoins'])
+def send_bitcoins(message):
+    chat_id = message.chat.id
+    buys = conn.call('GET', '/buy-bitcoins-online/ARS/.json').json()
+    maxadd = minadd = buys["data"]["ad_list"][0]
+    maxval = float(0);
+    minval = float(minadd["data"]["temp_price_usd"]);
+    for adds in buys["data"]["ad_list"]:
+        cval = float(adds["data"]["temp_price_usd"])
+        if cval > maxval:
+            maxval = cval
+            maxadd = adds
+        elif cval < minval:
+            minval = cval
+            minadd = adds
+    bot.send_message(chat_id,"MAXIMO:\n\n"+str(maxadd))
+    bot.send_message(chat_id,"MINIMO:\n\n"+str(minadd))
+
+@bot.message_handler(commands=['cotiza'])
+def send_cotiza(message):
+    chat_id = message.chat.id
+    # keyboard = [[InlineKeyboardButton("Argentina", callback_data='29'), InlineKeyboardButton("Brasil", callback_data='13')]]
+
+    # markup = InlineKeyboardMarkup(keyboard)
+
+    # bot.send_message(chat_id, "Choose one letter:", reply_markup=markup)
+    bot.send_message(chat_id,"cotizacion")
+
+# @bot.message_handler(commands=['reales'])
+# def send_documentos(message):
+#     chat_id = message.chat.id
+#     conn = httplib2.Http()
+#     headers = {
+#   'content-type':'text/plain',
+#   'Accept-Charset':'encoding=utf-8'
+#     }
+#     url_ = 'https://www.google.com/finance/converter?a=1000&from=BRL&to=ARS'
+#     #query_args = { 'a':'1000', 'from':'BRL', 'to':'ARS' }
+#     response = urllib2.urlopen(url_)
+#     encoding = response.headers['content-type'].split('charset=')[-1]
+#     ucontent = unicode(response.read(), encoding)
+#     html = response.read()
+#     response.close()  
+#     #uri_ = '%s?%s' % (url_, urlencode('a=1000'))
+#     #resp, content = conn.request(url_, "GET", headers)
+#    # resp, content = conn.request("GET","http://www.google.com/finance/converter?a=1000&from=BRL&to=ARS",headers)
+#     #for line in ucontent.encode('utf8'):
+# # print line
+#     if ucontent.encode('utf8').find('currency_converter_result') != -1:
+#         print 'findit'
+#   print ucontent.encode('utf8').find('currency_converter_result')
+#   aux = ucontent[ucontent.find('currency_converter_result'):]
+#   aux2 = aux[aux.find('<span class=bld>')+16:]
+#   valor = aux2[:aux2.find('ARS')]
+#     #print ucontent.encode('utf8')
+#     bot.send_message(chat_id,valor)
 
 @bot.message_handler(commands=['comm','command'])
-def send_documentos(message):
+def send_command(message):
     chat_id = message.chat.id
     param = message.text.split(' ',1)
     if len(param) == 1 or param[1]=="help":
@@ -139,7 +200,7 @@ def send_documentos(message):
     	bot.send_message(chat_id, os.system(param[1]))
 
 @bot.message_handler(commands=['drawx','draw'])
-def send_documentos(message):
+def send_draw(message):
     chat_id = message.chat.id
     msgid = message.message_id
     param = message.text.split(' ',1)
@@ -155,12 +216,12 @@ def send_documentos(message):
         with open('simplefunctionsGNUP', 'a') as file:
             file.write('plot [-10:10] '+param[1])
         #file.close()
-        os.system('gnuplot -c simplefunctionsGNUP')
-        #commands.getoutput("gnuplot -e 'plot [-10:10] '"+param[1])
-        img = open('output.png', 'rb')
-        bot.send_chat_action(chat_id, 'upload_photo')
-        bot.send_photo(chat_id, img, reply_to_message_id=msgid)
-        img.close()
+    commands.getoutput('gnuplot -c simplefunctionsGNUP')
+    #commands.getoutput("gnuplot -e 'plot [-10:10] '"+param[1])
+    img = open('output.png', 'rb')
+    bot.send_chat_action(chat_id, 'upload_photo')
+    bot.send_photo(chat_id, img, reply_to_message_id=msgid)
+    img.close()
     #bot.send_message(chat_id, )
 
 @bot.message_handler(commands=['calc'])
@@ -217,4 +278,4 @@ def wiki(message):
 
     
 
-bot.polling(none_stop=True)       # Iniciamos nuestro bot para que esté atento a los mensajes
+bot.polling(none_stop=True,timeout=120)       # Iniciamos nuestro bot para que esté atento a los mensajes

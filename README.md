@@ -5,10 +5,17 @@ bot en base a minbo de la comunidad Minka-IT
 Se necesita instalar el paquete pyTelegramBotAPO para poder hacer uso del API de Telegram.
 Ademas tambien py_expression_eval y de aiml, para que minbo pueda usar las apacidades del chat.
 
-	pip install pyTelegramBotAPI
-	pip install py_expression_eval
-	pip install aiml
-	pip install wikipedia
+	sudo pip install pyTelegramBotAPI
+	sudo pip install py_expression_eval
+	sudo pip install aiml
+	sudo pip install wikipedia
+	sudo pip install suds
+	sudo pip install lbcapi
+
+En algunos entronos es necesario actualizar las librerias
+
+	sudo pip install pytelegrambotapi --upgrade
+	sudo pip3 install pytelegrambotapi --upgrade 
 
 ## Token
 existe un archivo ignorado al cual se le debera asignar el token del bot.

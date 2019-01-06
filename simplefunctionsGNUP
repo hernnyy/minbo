@@ -3,7 +3,11 @@ set key left nobox
 set samples 100
 set style data points
 
+set grid
+set style line 100 lt 1 lc rgb "red" lw 2
+set arrow 100 from 0,-1 to 0,1 nohead ls 100 front
+
 set terminal png enhanced font "Helvetica,8"
 set output 'output.png'
 
-plot [-10:10] x**2,x**7
+plot [-10:10] x
