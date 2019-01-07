@@ -12,6 +12,8 @@ import telebot, os, aiml, sys, wikipedia
 import texts, botstokens
 import httplib2, commands, logging, urllib2,urllib
 from telebot import types
+import pyrebase
+import datetime
 
 
 reload(sys)
@@ -20,7 +22,8 @@ sys.setdefaultencoding('utf8')
 #wikipedia set
 wikipedia.set_lang("es")
 
-conn = api.hmac(botstokens.tokens['hmac_key'], botstokens.tokens['hmac_secret'])
+conn = api.hmac(botstokens.hmacTokens['hmac_key'], botstokens.hmacTokens['hmac_secret'])
+
 bot = telebot.TeleBot(botstokens.tokens['alherta'])
 
 logger = telebot.logger
@@ -29,6 +32,11 @@ parser = Parser()
 
 client = Client(url='http://www.banguat.gob.gt/variables/ws/TipoCambio.asmx?WSDL')
 ##client.set_options()
+
+firebase = pyrebase.initialize_app(botstokens.configFirebase)
+# Get a reference to the auth service
+auth = firebase.auth();
+db = firebase.database();
 
 # aiml: Cargar el kernel, setear valores y aprender conocimiento
 #kernel = aiml.kernel()
@@ -136,6 +144,7 @@ def send_tecla(message):
 @bot.message_handler(commands=['bitcoins'])
 def send_bitcoins(message):
     chat_id = message.chat.id
+    bot.send_chat_action(chat_id=chat_id, action='typing')
     buys = conn.call('GET', '/buy-bitcoins-online/ARS/.json').json()
     maxadd = minadd = buys["data"]["ad_list"][0]
     maxval = float(0);
@@ -148,6 +157,11 @@ def send_bitcoins(message):
         elif cval < minval:
             minval = cval
             minadd = adds
+    user = auth.sign_in_with_email_and_password(botstokens.userFirebase['user'],botstokens.userFirebase['pass'])
+    if (user):
+        today = datetime.datetime.now()
+        db.child("historial").child("{:%Y%m%d%H%M}".format(today)).child("minads").set(minadd,user['idToken'])
+        db.child("historial").child("{:%Y%m%d%H%M}".format(today)).child("maxads").set(maxadd,user['idToken'])
     bot.send_message(chat_id,"MAXIMO:\n\n"+str(maxadd))
     bot.send_message(chat_id,"MINIMO:\n\n"+str(minadd))
 
@@ -278,4 +292,4 @@ def wiki(message):
 
     
 
-bot.polling(none_stop=True,timeout=120)       # Iniciamos nuestro bot para que esté atento a los mensajes
+bot.polling(none_stop=True,timeout=80)       # Iniciamos nuestro bot para que esté atento a los mensajes
