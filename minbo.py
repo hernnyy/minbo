@@ -7,22 +7,22 @@ BotName: alherta
 
 from py_expression_eval import Parser
 from suds.client import Client
-from lbcapi import api
+#from lbcapi import api
 import telebot, os, aiml, sys, wikipedia
 import texts, botstokens
-import httplib2, commands, logging, urllib2,urllib
+import httplib2, logging
 from telebot import types
 import pyrebase
 import datetime
 
 
-reload(sys)
-sys.setdefaultencoding('utf8')
+#reload(sys)
+#sys.setdefaultencoding('utf8')
 
 #wikipedia set
 wikipedia.set_lang("es")
 
-conn = api.hmac(botstokens.hmacTokens['hmac_key'], botstokens.hmacTokens['hmac_secret'])
+#conn = api.hmac(botstokens.hmacTokens['hmac_key'], botstokens.hmacTokens['hmac_secret'])
 
 bot = telebot.TeleBot(botstokens.tokens['alherta'])
 
@@ -33,10 +33,10 @@ parser = Parser()
 client = Client(url='http://www.banguat.gob.gt/variables/ws/TipoCambio.asmx?WSDL')
 ##client.set_options()
 
-firebase = pyrebase.initialize_app(botstokens.configFirebase)
-# Get a reference to the auth service
-auth = firebase.auth();
-db = firebase.database();
+#firebase = pyrebase.initialize_app(botstokens.configFirebase)
+### Get a reference to the auth service
+#auth = firebase.auth();
+#db = firebase.database();
 
 # aiml: Cargar el kernel, setear valores y aprender conocimiento
 #kernel = aiml.kernel()
@@ -145,25 +145,25 @@ def send_tecla(message):
 def send_bitcoins(message):
     chat_id = message.chat.id
     bot.send_chat_action(chat_id=chat_id, action='typing')
-    buys = conn.call('GET', '/buy-bitcoins-online/ARS/.json').json()
-    maxadd = minadd = buys["data"]["ad_list"][0]
-    maxval = float(0);
-    minval = float(minadd["data"]["temp_price_usd"]);
-    for adds in buys["data"]["ad_list"]:
-        cval = float(adds["data"]["temp_price_usd"])
-        if cval > maxval:
-            maxval = cval
-            maxadd = adds
-        elif cval < minval:
-            minval = cval
-            minadd = adds
-    user = auth.sign_in_with_email_and_password(botstokens.userFirebase['user'],botstokens.userFirebase['pass'])
-    if (user):
-        today = datetime.datetime.now()
-        db.child("historial").child("{:%Y%m%d%H%M}".format(today)).child("minads").set(minadd,user['idToken'])
-        db.child("historial").child("{:%Y%m%d%H%M}".format(today)).child("maxads").set(maxadd,user['idToken'])
-    bot.send_message(chat_id,"MAXIMO:\n\n"+str(maxadd))
-    bot.send_message(chat_id,"MINIMO:\n\n"+str(minadd))
+    #buys = conn.call('GET', '/buy-bitcoins-online/ARS/.json').json()
+    #maxadd = minadd = buys["data"]["ad_list"][0]
+    #maxval = float(0);
+    #minval = float(minadd["data"]["temp_price_usd"]);
+    #for adds in buys["data"]["ad_list"]:
+    #    cval = float(adds["data"]["temp_price_usd"])
+    #    if cval > maxval:
+    #        maxval = cval
+    #        maxadd = adds
+    #    elif cval < minval:
+    #        minval = cval
+    #        minadd = adds
+    #user = auth.sign_in_with_email_and_password(botstokens.userFirebase['user'],botstokens.userFirebase['pass'])
+    #if (user):
+    #    today = datetime.datetime.now()
+    #    db.child("historial").child("{:%Y%m%d%H%M}".format(today)).child("minads").set(minadd,user['idToken'])
+    #    db.child("historial").child("{:%Y%m%d%H%M}".format(today)).child("maxads").set(maxadd,user['idToken'])
+    #bot.send_message(chat_id,"MAXIMO:\n\n"+str(maxadd))
+    #bot.send_message(chat_id,"MINIMO:\n\n"+str(minadd))
 
 @bot.message_handler(commands=['cotiza'])
 def send_cotiza(message):
@@ -211,7 +211,7 @@ def send_command(message):
     if len(param) == 1 or param[1]=="help":
         bot.send_message(chat_id,texts.text_messages['help_comm'])
     else:
-    	bot.send_message(chat_id, os.system(param[1]))
+        bot.send_message(chat_id, os.system(param[1]))
 
 @bot.message_handler(commands=['drawx','draw'])
 def send_draw(message):
